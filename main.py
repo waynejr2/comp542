@@ -5,29 +5,99 @@ Created on Fri Apr 19 01:26:04 2024
 @author: wayne
 """
 
+# from rule_based_deck import RuleBasedDeck
+# import pprint
+# from Player import Player
+
+# def main():
+#     game_deck = RuleBasedDeck(number_of_turns=100, change_rule_count=1)
+#     player = Player(learning_rate=0.05)  # Specify a custom learning rate
+#     pretty_printer = pprint.PrettyPrinter(indent=4)
+    
+#     while True:
+#         turn_info = game_deck.get_turn()
+#         pretty_printer.pprint(turn_info)
+        
+#         guess = player.make_guess(turn_info['cards'], turn_info['player_card'])
+
+#         correct = (guess == turn_info['key_card'])
+#         #print(correct)
+#         player.feedback(correct)
+#         game_deck.update_game_status(guess_correct=correct)
+        
+#         if turn_info['status'] == 'final':
+#             break
+#         #game_deck.update_game_status(guess_correct=True)  # Simulate correct guesses for the example
+
+# if __name__ == "__main__":
+#     main()
+    
 from rule_based_deck import RuleBasedDeck
 import pprint
 from Player import Player
+import json
+import os
+
+def run_game(number_of_turns, change_rule_count, learning_rate, discount_factor, log_file):
+    game_deck = RuleBasedDeck(number_of_turns=number_of_turns, change_rule_count=change_rule_count)
+    player = Player(learning_rate=learning_rate, discount_factor=discount_factor)
+    pretty_printer = pprint.PrettyPrinter(indent=4)
+
+    correct_guesses = 0
+    total_turns = 0
+
+    with open(log_file, 'w') as log:
+        while True:
+            turn_info = game_deck.get_turn()
+            pretty_printer.pprint(turn_info)
+
+            # Player makes a guess based on current cards and player_card
+            guess = player.make_guess(turn_info['cards'], turn_info['player_card'])
+
+            # Check if the guess is correct by comparing it to the key_card
+            correct = (guess == turn_info['key_card'])  # Comparing guess with key_card
+
+            # Update statistics
+            correct_guesses += correct
+            total_turns += 1
+            
+            # Provide feedback to the player
+            player.feedback(correct)
+            
+            # Update game status based on whether the guess was correct
+            game_deck.update_game_status(guess_correct=correct)
+
+            if turn_info['status'] == 'final':
+                break
+        
+        # Write data to log file at the end of the game
+        log_data = {
+            'learning_rate': learning_rate,
+            'correct_guesses': correct_guesses,
+            'total_turns': total_turns,
+            'accuracy': correct_guesses / total_turns if total_turns > 0 else 0
+        }
+        json.dump(log_data, log, indent=2)  # Store data in JSON format
 
 def main():
-    game_deck = RuleBasedDeck(number_of_turns=100, change_rule_count=1)
-    player = Player(learning_rate=0.05)  # Specify a custom learning rate
-    pretty_printer = pprint.PrettyPrinter(indent=4)
-    
-    while True:
-        turn_info = game_deck.get_turn()
-        pretty_printer.pprint(turn_info)
-        
-        guess = player.make_guess(turn_info['cards'], turn_info['player_card'])
+    # Constants and initial parameters
+    number_of_turns = 250
+    change_rule_count = 5
+    learning_rate = 0.1
+    discount_factor = 0.95
+    learning_rate_increment = 0.01
+    number_of_games = 10  # Number of games to be played
 
-        correct = (guess == turn_info['key_card'])
-        #print(correct)
-        player.feedback(correct)
-        game_deck.update_game_status(guess_correct=correct)
-        
-        if turn_info['status'] == 'final':
-            break
-        #game_deck.update_game_status(guess_correct=True)  # Simulate correct guesses for the example
+    for i in range(number_of_games):
+        # Adjust learning rate for each game
+        current_learning_rate = learning_rate + (i * learning_rate_increment)
+
+        # Define the log file name for this game
+        log_file = f'game_{i + 1}.json'  # Unique file for each game
+
+        # Run the game with the current settings
+        run_game(number_of_turns, change_rule_count, current_learning_rate, discount_factor, log_file)
 
 if __name__ == "__main__":
     main()
+    
