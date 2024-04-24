@@ -3,6 +3,7 @@ import random
 class RuleBasedDeck:
     def __init__(self, number_of_turns, change_rule_count):
         self.number_of_turns = number_of_turns
+        self.current_turn = 1
         self.change_rule_count = change_rule_count
         self.correct_guesses = 0
         self.number_of_rule_switches = 0
@@ -80,6 +81,7 @@ class RuleBasedDeck:
             'set_rule': self.set_rule,
             'correct_guesses': self.correct_guesses,
             'number_of_turns': self.number_of_turns,
+            'current_turn': self.current_turn,
             'number_of_rule_switches': self.number_of_rule_switches,
             'status': self.status if self.number_of_turns > 0 else 'final'
         }
@@ -88,5 +90,6 @@ class RuleBasedDeck:
         if guess_correct:
             self.correct_guesses += 1
         self.number_of_turns -= 1
+        self.current_turn += 1
         if self.number_of_turns <= 1:
             self.status = 'final'

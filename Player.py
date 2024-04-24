@@ -28,18 +28,18 @@ import random
 class Player:
     def __init__(self, learning_rate=0.1, discount_factor=0.95, epsilon=0.2):
         # Initialize the Q-table and other parameters
-        self.q_table = {}
+        self.q_table = {
+            'value': 0.5,
+            'color': 0.5,
+            'shape': 0.5,
+        }
         self.learning_rate = learning_rate
         self.discount_factor = discount_factor
-        self.epsilon = epsilon
-        self.last_set_rule = None  # Store the set-rule for later use
-
-    def make_guess(self, cards, player_card):
-        # Use choose_method_for_action to decide the guess
-        return self.choose_method_for_action(player_card, cards)
+        self.epsilon = epsilon  # Controls exploration probability
+        self.last_set_rule = None  # Store the last set-rule
     
     def get_key_card_from_action(self, set_rule, player_card, cards):
-        # Find the card from 'cards' that matches the set-rule value from 'player_card'
+        # Find the card in 'cards' that matches the set-rule value from 'player_card'
         matching_card = next(
             card for card in cards if card[set_rule] == player_card[set_rule]
         )
@@ -51,15 +51,19 @@ class Player:
         if random.random() < self.epsilon:
             # Exploration: Select a random set-rule and get the key_card
             set_rule = random.choice(['value', 'color', 'shape'])
-            self.epsilon = max(self.epsilon * 0.95, 0.01)  # Reduce epsilon with a lower limit
+            self.epsilon = max(self.epsilon * 0.95, 0.01)  # Lower limit for epsilon
             return self.get_key_card_from_action(set_rule, player_card, cards)
         else:
-            # Exploitation: Placeholder logic for when exploitation is chosen
-            # In this case, return the first card (placeholder logic)
-            return cards[0]  # This should be replaced with actual exploitation logic
+            # Exploitation: Choose the set-rule with the highest Q-value
+            set_rule = max(self.q_table, key=self.q_table.get)  # Find the set-rule with the highest Q-value
+            return self.get_key_card_from_action(set_rule, player_card, cards)
+
+    def make_guess(self, cards, player_card):
+        # Use choose_method_for_action to decide the guess
+        return self.choose_method_for_action(player_card, cards)
     
     def feedback(self, correct):
-        # Placeholder for Q-value update logic
+        # Placeholder for Q-value update logic based on the feedback
         pass
     
     def getTurnInfo(self):
@@ -69,5 +73,5 @@ class Player:
             'discount_factor': self.discount_factor,
             'epsilon': self.epsilon,
             'last_set_rule': self.last_set_rule,
-            'q_table': self.q_table  # Returning the Q-table state
+            'q_table': self.q_table,  # Return the Q-table state
         }
