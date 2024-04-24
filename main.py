@@ -109,7 +109,7 @@ from Player import Player
 def run_game(game_id, number_of_turns, change_rule_count, learning_rate, discount_factor, log_data):
     game_deck = RuleBasedDeck(number_of_turns=number_of_turns, change_rule_count=change_rule_count)
     player = Player(learning_rate=learning_rate, discount_factor=discount_factor)
-    pretty_printer = pprint.PrettyPrinter(indent=4)
+    pretty_printer = pprint.PrettyPrinter(indent=2)
 
     # Store information for each game in the overall log data
     game_data = {
@@ -125,7 +125,7 @@ def run_game(game_id, number_of_turns, change_rule_count, learning_rate, discoun
 
     while True:
         turn_info = game_deck.get_turn()
-        pretty_printer.pprint(turn_info)
+        #pretty_printer.pprint(turn_info)
 
         # Player makes a guess and checks its correctness
         guess = player.make_guess(turn_info['cards'], turn_info['player_card'])
@@ -151,17 +151,17 @@ def run_game(game_id, number_of_turns, change_rule_count, learning_rate, discoun
 
 def main():
     # Constants and initial parameters
-    number_of_turns = 500
+    number_of_turns = 5000
     change_rule_count = 5
     learning_rate = 0.1
     discount_factor = 0.95
     learning_rate_increment = 0.01
-    number_of_games = 1  # Total number of games to be played
+    number_of_games = 100  # Total number of games to be played
 
     # List to hold all game data
     all_games_data = []
 
-    for i in range(number_of_games):
+    for i in range(1, number_of_games + 1):
         # Adjust learning rate for each game
         current_learning_rate = learning_rate + (i * learning_rate_increment)
 
@@ -170,7 +170,7 @@ def main():
 
     # Write all games' data to a single JSON file at the end
     with open('all_games_data.json', 'w') as log_file:
-        json.dump(all_games_data, log_file, indent=4)  # Write the entire log data to a single file
+        json.dump(all_games_data, log_file, indent=2)  # Write the entire log data to a single file
 
 if __name__ == "__main__":
     main()
