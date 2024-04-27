@@ -47,7 +47,6 @@ class RuleBasedDeck:
             }
         return player_card
     
-    import random
 
     def change_set_rule(self):
         self.number_of_rule_switches += 1

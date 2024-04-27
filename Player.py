@@ -5,24 +5,6 @@ Created on Fri Apr 19 02:51:09 2024
 @author: wayne
 """
 
-# import random
-
-# class Player:
-#     def __init__(self, learning_rate=0.1, discount_factor=0.95):
-#         # Initialize the Q-table
-#         self.q_table = {}
-#         self.learning_rate = learning_rate
-#         self.discount_factor = discount_factor
-#         self.epsilon_lower_limit = 0.01
-
-#     def make_guess(self, cards, player_card):
-#         # Implement the logic to make a guess based on the Q-table or randomly
-#         return random.choice(cards)  # Placeholder for actual ML-based decision making
-
-#     def feedback(self, result):
-#         # Placeholder for Q-value update logic
-#         # Actual implementation needed based on specific game design
-#         pass
 import random
 
 class Player:
@@ -35,23 +17,21 @@ class Player:
         }
         self.learning_rate = learning_rate
         self.discount_factor = discount_factor
-        self.epsilon = epsilon  # Controls exploration probability
-        self.last_set_rule = None  # Store the last used set-rule
+        self.epsilon = epsilon  # exploration probability
+        self.last_set_rule = None  #last used set-rule
 
     def get_key_card_from_action(self, set_rule, player_card, cards):
-        # Find the card that matches the set-rule from 'player_card'
         matching_card = next(
             card for card in cards if card[set_rule] == player_card[set_rule]
         )
-        self.last_set_rule = set_rule  # Store the set-rule for feedback
+        self.last_set_rule = set_rule  #set-rule required for feedback
         return matching_card
 
     def choose_method_for_action(self, player_card, cards):
-        # Decide whether to explore or exploit based on epsilon
+        # explore or exploit
         if random.random() < self.epsilon:
-            # Exploration: Select a random set-rule and get the key_card
             set_rule = random.choice(['value', 'color', 'shape'])
-            self.epsilon = max(self.epsilon * 0.95, 0.01)  # Maintain lower limit for epsilon
+            self.epsilon = max(self.epsilon * 0.95, 0.01)  ##lower limit for epsilon
             return self.get_key_card_from_action(set_rule, player_card, cards)
         else:
             # Exploitation: Choose the set-rule with the highest Q-value, with tie-breaker
@@ -61,7 +41,6 @@ class Player:
             return self.get_key_card_from_action(set_rule, player_card, cards)
 
     def make_guess(self, cards, player_card):
-        # Use 'choose_method_for_action' to make the guess
         return self.choose_method_for_action(player_card, cards)
 
     def feedback(self, correct):
