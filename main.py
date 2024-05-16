@@ -52,7 +52,7 @@ def run_game(game_id, number_of_turns, change_rule_count, learning_rate, discoun
 
 def main():
     # initial parameters
-    number_of_turns = 10000
+    number_of_turns = 5000
     change_rule_count = 10
     learning_rate = 0.1
     discount_factor = 0.95

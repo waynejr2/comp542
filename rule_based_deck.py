@@ -31,6 +31,7 @@ class RuleBasedDeck:
             cards.append(card)
         return cards
 
+    # only one of the three will be set, the other two are None
     def create_player_card(self, match_value=None, match_color=None, match_shape=None):
         # Determine the values for each attribute, either by matching the key card or randomly.
         value = match_value if match_value is not None else random.choice(self.values)
@@ -57,9 +58,8 @@ class RuleBasedDeck:
 
 
     def get_turn(self):
-        self.cards = self.create_cards()  # Recreate cards every turn
-        self.key_card = random.choice(self.cards)  # Pick a new key card every turn
-
+        self.cards = self.create_cards()
+        self.key_card = random.choice(self.cards)  # card player has to match too
         if self.correct_guesses >= self.change_rule_count:
             #self.set_rule = random.choice(self.rules)
             self.change_set_rule()

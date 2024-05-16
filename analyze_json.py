@@ -7,12 +7,12 @@ Created on Tue Apr 23 19:35:42 2024
 
 import json
 
-# Function to create the learning rate vs. average turns per rule change JSON file
+# file too large.  Creating smaller file for faster rerunning
 def create_lr_vs_arprc_json(input_file, output_file):
     with open(input_file, 'r') as file:
         data = json.load(file)  # Load the large JSON data
 
-    # Prepare a list to hold the desired information
+    # Where we will hold te data
     new_data = []
     
     # Loop through each game to extract the required data

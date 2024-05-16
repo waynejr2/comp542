@@ -67,6 +67,7 @@ class Player:
         upper_limit = 1.0  # Define an upper limit for Q-values
         for rule in self.q_table:
             # Ensure Q-values are between 0 and the upper limit
+            # kind of like how city of heroes clamped values for attacking
             self.q_table[rule] = min(max(self.q_table[rule], 0), upper_limit)
 
     def getTurnInfo(self):
