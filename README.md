@@ -1,2 +1,4 @@
 # comp542project
-final turned in
+CSUN COMP 542 Machine Learning Project.
+
+Wisconsn card test.
